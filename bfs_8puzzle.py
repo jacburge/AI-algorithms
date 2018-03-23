@@ -15,13 +15,11 @@ welcome()
 
 ### Bring in system arguments
 goalState = [0,1,2,3,4,5,6,7,8]
-method = sys.argv[1]
-initState = list(int(i) for i in sys.argv[2].replace(',', ' ').split())
+_,method,*entry = sys.argv
+initState = []
+for i in entry:
+    initState.append(int(i))
 
-# for i in sys.argv:
-#     # initState.append(int(i))
-#     print(i)
-# print(initState)
 
 ### Make sure the input is valid
 # count = 0
@@ -59,7 +57,7 @@ initState = list(int(i) for i in sys.argv[2].replace(',', ' ').split())
 
 # def check_if_solvable():
 #     InversionsCount(initState[:])
-#     if count%2 != 0:
+#     if count%2 == 0:
 #         print('Sorry, that is not a solvable puzzle!')
 #         exit()
 #     else:
@@ -72,7 +70,6 @@ def goalTest(state):
     else:
         return False
 
-print(initState)
 if goalTest(initState):
     print("Hey, no fair playing with a solved game! Try again.")
     exit()
@@ -89,7 +86,7 @@ def initialize_game():
     print('Index location of blank space:')
     print(blank)
 
-# initialize_game()
+initialize_game()
 
 # #Define helper functions to move the blank space
 def up(state):
@@ -135,88 +132,53 @@ def findNeighbors(state):
         neighborState['right'] = right(state)
     return neighborState
 
-#TEST
-
-# frontier = [initState]
-# explored = []
-# print(frontier)
-# frontier.pop(0)
-# print(findNeighbors(initState))
-# for path, neighbor in findNeighbors(initState).items():
-#             if neighbor not in frontier and neighbor not in explored:
-#                 frontier.append(neighbor)
-# state = frontier[0]
-# print(state)
-# frontier.pop(0)
-# explored.append(state)
-# print(findNeighbors(state))
-# for path, neighbor in findNeighbors(initState).items():
-#             if neighbor not in frontier and neighbor not in explored:
-#                 frontier.append(neighbor)
-# state = frontier[0]
-# print(state)
-# frontier.pop(0)
-# explored.append(state)
-# print(findNeighbors(state))
-# for path, neighbor in findNeighbors(initState).items():
-#             if neighbor not in frontier and neighbor not in explored:
-#                 frontier.append(neighbor)
-
-# # ### Define the breadth first search algorithm to solve the game
+# ### Define the breadth first search algorithm to solve the game
 def bfs(initState):
     print("Initial state...")
     print(initState)
     init = initState[:]
     frontier = [init]
     explored = []
-    path_to_goal = []
+    neighbors = []
+    # path_to_goal = []
     cost_of_path = 0
-    depth = 0
+    path_graph = ''
     while len(frontier) > 0:
-        depth += 1
-        neighbors = []
         state = frontier[0]
-        # print('new state:')
-        # print(state)
+        print('new state:')
+        print(state)
         frontier.pop(0)
         explored.append(state)
         if goalTest(state):
-            print("Success! Holy crap it worked!")
+            print("Success!")
             print("final State: ")
             print(state)
             print("path_to_goal: ")
-            print(path_to_goal)
-            print("neighbors: ")
-            print(neighbors)
+            path_to_goal = list(path_graph.split(','))
+            print(path_to_goal[1:])
+            # print("neighbors: ")
+            # print(neighbors)
             print("cost_of_path: ")
-            print(cost_of_path)
-            print("depth: ")
-            print(depth)
+            print(len(path_to_goal)-1)
             return
         for path, neighbor in findNeighbors(state).items():
             if neighbor not in frontier and neighbor not in explored:
                 frontier.append(neighbor)
-                neighbors.append(path)
-        # print("frontier:")
-        # print(frontier)
-        # print("explored:")
-        # print(explored)
-        # print("neighbors: ")
-        # print(neighbors)
-        path_to_goal.append(neighbors[0])
+                neighbors.append(path_graph + ',' + path)
+        print("neighbors: ")
+        print(neighbors)
+        path_graph = neighbors[0]
+        # path_to_goal.append(neighbors[0])
         neighbors.pop(0)
         cost_of_path += 1
         # print('cost of path:')
         # print(cost_of_path)
         # print('path:')
-        print(path_to_goal)
-        if cost_of_path == 50:
+        # print(path_to_goal)
+        if cost_of_path == 100:
             print('Did you know Breadth First Search can take 350 YEARS to run through a tree of depth 16?!')
-            print('Why would anyone ever use BFS?')
-            print("Breadth First Search is clearly too lame to handle this one. Sorry, you lose")
+            print('Sorry, this might not be a solvable puzzle...')
             return
     return 'Failure'
 
 bfs(initState)
-
-
